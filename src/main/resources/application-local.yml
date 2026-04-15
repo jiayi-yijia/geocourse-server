@@ -1,0 +1,50 @@
+geocourse:
+  tenant:
+    default-tenant-id: 1001
+  infrastructure:
+    mysql:
+      host: 192.168.200.129
+      port: 3306
+      database: geocourse
+      username: root
+      password: root123456
+    redis:
+      host: 192.168.200.129
+      port: 6379
+      password: redis123456
+      database: 0
+    rabbitmq:
+      host: 192.168.200.129
+      port: 5672
+      username: admin
+      password: admin123456
+      virtual-host: /
+      management-port: 15672
+    elasticsearch:
+      schema: http
+      host: 192.168.200.129
+      port: 9200
+    minio:
+      endpoint: http://192.168.200.129:9000
+      console-endpoint: http://192.168.200.129:9001
+      access-key: minioadmin
+      secret-key: minioadmin123
+      bucket: geocourse
+      public-url: http://192.168.200.129:9000/geocourse
+    vod:
+      # 原来的 secret-id: 真实的ID
+      secret-id: YOUR_TENCENT_SECRET_ID  # 替换为占位符
+      secret-key: iBOL2TfbIl03sToukKhofGbhYAXkjT0J
+      region: ap-chongqing
+      sub-app-id: 1403561937
+      procedure:
+    monitoring:
+      prometheus-url: http://192.168.200.129:9090
+      grafana-url: http://192.168.200.129:3000
+      grafana-username: admin
+    pgvector:
+      host: 192.168.200.129
+      port: 5432
+      database: geocourse_ai
+      username: pgvector
+      password: pgvector123456

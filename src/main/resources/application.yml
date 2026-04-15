@@ -1,0 +1,117 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  application:
+    name: geocourse-server
+  profiles:
+    default: local
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:512MB}
+      max-request-size: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:1024MB}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${geocourse.infrastructure.mysql.host}:${geocourse.infrastructure.mysql.port}/${geocourse.infrastructure.mysql.database}?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_0900_ai_ci&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${geocourse.infrastructure.mysql.username}
+    password: ${geocourse.infrastructure.mysql.password}
+  data:
+    redis:
+      repositories:
+        enabled: false
+      host: ${geocourse.infrastructure.redis.host}
+      port: ${geocourse.infrastructure.redis.port}
+      password: ${geocourse.infrastructure.redis.password:}
+      database: ${geocourse.infrastructure.redis.database}
+      timeout: 5s
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+          max-wait: 2s
+  rabbitmq:
+    host: ${geocourse.infrastructure.rabbitmq.host}
+    port: ${geocourse.infrastructure.rabbitmq.port}
+    username: ${geocourse.infrastructure.rabbitmq.username}
+    password: ${geocourse.infrastructure.rabbitmq.password}
+    virtual-host: ${geocourse.infrastructure.rabbitmq.virtual-host}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: auto
+        default-requeue-rejected: false
+  elasticsearch:
+    uris: ${geocourse.infrastructure.elasticsearch.schema}://${geocourse.infrastructure.elasticsearch.host}:${geocourse.infrastructure.elasticsearch.port}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  default-flat-param-object: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    db-config:
+      id-type: ASSIGN_ID
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+logging:
+  level:
+    com.bddk.geocourse: INFO
+
+sa-token:
+  token-name: satoken
+  timeout: 7200
+  active-timeout: -1
+  is-concurrent: false
+  is-share: false
+  token-style: uuid
+
+geocourse:
+  info:
+    name: AI智慧教学平台
+    version: 0.1.0
+    description: 基于模块化单体的智慧教学平台后端骨架
+    api-prefix: /admin-api
+  tenant:
+    enabled: true
+    header-name: X-Tenant-Id
+    default-tenant-id: 1
+    ignore-paths:
+      - /actuator/**
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /v3/api-docs/**
+      - /admin-api/architecture/**
+      - /admin-api/system/ping
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+logging:
+  level:
+    com.bddk.geocourse: DEBUG
+

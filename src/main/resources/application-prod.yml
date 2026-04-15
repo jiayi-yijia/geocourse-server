@@ -1,0 +1,65 @@
+server:
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+  data:
+    redis:
+      ssl:
+        enabled: false
+
+logging:
+  level:
+    com.bddk.geocourse: INFO
+
+geocourse:
+  infrastructure:
+    mysql:
+      host: ${MYSQL_HOST}
+      port: ${MYSQL_PORT:3306}
+      database: ${MYSQL_DATABASE:geocourse}
+      username: ${MYSQL_USERNAME}
+      password: ${MYSQL_PASSWORD}
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+    rabbitmq:
+      host: ${RABBITMQ_HOST}
+      port: ${RABBITMQ_PORT:5672}
+      username: ${RABBITMQ_USERNAME}
+      password: ${RABBITMQ_PASSWORD}
+      virtual-host: ${RABBITMQ_VHOST:/}
+      management-port: ${RABBITMQ_MANAGEMENT_PORT:15672}
+    elasticsearch:
+      schema: ${ELASTICSEARCH_SCHEMA:http}
+      host: ${ELASTICSEARCH_HOST}
+      port: ${ELASTICSEARCH_PORT:9200}
+    minio:
+      endpoint: ${MINIO_ENDPOINT}
+      console-endpoint: ${MINIO_CONSOLE_ENDPOINT:}
+      access-key: ${MINIO_ACCESS_KEY}
+      secret-key: ${MINIO_SECRET_KEY}
+      bucket: ${MINIO_BUCKET:geocourse}
+      public-url: ${MINIO_PUBLIC_URL:}
+    vod:
+      secret-id: ${TENCENTCLOUD_SECRET_ID:}
+      secret-key: ${TENCENTCLOUD_SECRET_KEY:}
+      region: ${TENCENTCLOUD_VOD_REGION:ap-beijing}
+      sub-app-id: ${TENCENTCLOUD_VOD_SUB_APP_ID:}
+      procedure: ${TENCENTCLOUD_VOD_PROCEDURE:}
+    monitoring:
+      prometheus-url: ${PROMETHEUS_URL:}
+      grafana-url: ${GRAFANA_URL:}
+      grafana-username: ${GRAFANA_USERNAME:}
+    pgvector:
+      host: ${PGVECTOR_HOST}
+      port: ${PGVECTOR_PORT:5432}
+      database: ${PGVECTOR_DATABASE:geocourse_ai}
+      username: ${PGVECTOR_USERNAME}
+      password: ${PGVECTOR_PASSWORD}
+
