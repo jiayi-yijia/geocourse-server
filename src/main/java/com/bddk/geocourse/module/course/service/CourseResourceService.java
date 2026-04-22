@@ -9,6 +9,8 @@ import java.util.List;
 public interface CourseResourceService {
     List<CourseResourceView> listByCategory(String category);
 
+    CourseResourceView getCourseDetail(Long courseId);
+
     CourseResourceView create(String category, CourseResourceCreateCommand command);
 
     CourseResourceView update(String category, Long courseId, CourseResourceUpdateRequest request);

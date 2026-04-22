@@ -45,12 +45,14 @@ public class TeacherExamPublishServiceImpl implements TeacherExamPublishService 
         Long tenantId = teacherPortalContextService.currentTenantId();
         long pageNo = query.getPageNo() <= 0 ? 1 : query.getPageNo();
         long pageSize = query.getPageSize() <= 0 ? 10 : Math.min(query.getPageSize(), 100);
+        String title = trimToNull(query.getTitle());
+        String status = normalizeStatusAllowBlank(query.getStatus());
         Page<TeacherExamPublish> page = teacherExamPublishMapper.selectPage(new Page<>(pageNo, pageSize),
                 Wrappers.<TeacherExamPublish>lambdaQuery()
                         .eq(TeacherExamPublish::getTenantId, tenantId)
-                        .like(StringUtils.hasText(query.getTitle()), TeacherExamPublish::getTitle, query.getTitle().trim())
+                        .like(title != null, TeacherExamPublish::getTitle, title)
                         .eq(query.getPaperId() != null, TeacherExamPublish::getPaperId, query.getPaperId())
-                        .eq(StringUtils.hasText(query.getStatus()), TeacherExamPublish::getStatus, normalizeStatusAllowBlank(query.getStatus()))
+                        .eq(status != null, TeacherExamPublish::getStatus, status)
                         .orderByDesc(TeacherExamPublish::getUpdateTime)
                         .orderByDesc(TeacherExamPublish::getId));
         Map<Long, String> paperNames = teacherPaperMapper.selectList(Wrappers.<TeacherPaper>lambdaQuery()
@@ -83,7 +85,7 @@ public class TeacherExamPublishServiceImpl implements TeacherExamPublishService 
         publish.setPaperId(paper.getId());
         publish.setTitle(trimToNull(request.getTitle()));
         publish.setDescription(trimToNull(request.getDescription()));
-        publish.setStatus("DRAFT");
+        publish.setStatus("PUBLISHED");
         publish.setStartTime(request.getStartTime());
         publish.setEndTime(request.getEndTime());
         publish.setPassScore(request.getPassScore());

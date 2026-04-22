@@ -9,5 +9,17 @@ public class CourseResourceStorageMetadata {
 
     private String objectKey;
 
-    private String fileId;
+    private String coverUrl;
+
+    private String coverObjectKey;
+
+    private Long fileSize;
+
+    private String contentType;
+
+    private String resourceTitle;
+
+    private String originalFileName;
+
+    private Long uploaderId;
 }

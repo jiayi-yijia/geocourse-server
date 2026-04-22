@@ -33,20 +33,6 @@ spring:
           max-idle: 8
           min-idle: 2
           max-wait: 2s
-  rabbitmq:
-    host: ${geocourse.infrastructure.rabbitmq.host}
-    port: ${geocourse.infrastructure.rabbitmq.port}
-    username: ${geocourse.infrastructure.rabbitmq.username}
-    password: ${geocourse.infrastructure.rabbitmq.password}
-    virtual-host: ${geocourse.infrastructure.rabbitmq.virtual-host}
-    publisher-confirm-type: correlated
-    publisher-returns: true
-    listener:
-      simple:
-        acknowledge-mode: auto
-        default-requeue-rejected: false
-  elasticsearch:
-    uris: ${geocourse.infrastructure.elasticsearch.schema}://${geocourse.infrastructure.elasticsearch.host}:${geocourse.infrastructure.elasticsearch.port}
 
 springdoc:
   api-docs:
@@ -59,7 +45,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health,info
   endpoint:
     health:
       probes:

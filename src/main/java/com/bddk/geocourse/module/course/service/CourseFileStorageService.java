@@ -6,6 +6,7 @@ import com.bddk.geocourse.framework.config.InfrastructureProperties;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import io.minio.GetObjectArgs;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class CourseFileStorageService {
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(resolveContentType(file))
                     .build());
-            return new StoredResource(buildPublicUrl(objectKey), "minio", objectKey, null);
+            return new StoredResource(buildPublicUrl(objectKey), "minio", objectKey);
         } catch (Exception ex) {
             throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR, "保存课程文件失败");
         }
@@ -79,6 +80,33 @@ public class CourseFileStorageService {
             return;
         }
         deleteLegacyLocalByUrl(url);
+    }
+
+    public byte[] readBytes(String objectKey, String url) {
+        String finalObjectKey = StringUtils.hasText(objectKey) ? objectKey.trim() : extractObjectKey(url);
+        if (StringUtils.hasText(finalObjectKey)) {
+            try (var stream = minioClient.getObject(GetObjectArgs.builder()
+                    .bucket(properties.getBucket())
+                    .object(finalObjectKey)
+                    .build())) {
+                return stream.readAllBytes();
+            } catch (Exception ex) {
+                throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR, "读取课程文件失败");
+            }
+        }
+
+        if (StringUtils.hasText(url) && url.startsWith("/uploads/")) {
+            try {
+                String relative = url.substring("/uploads/".length());
+                Path target = LEGACY_UPLOAD_ROOT.resolve(relative).normalize();
+                if (target.startsWith(LEGACY_UPLOAD_ROOT) && Files.exists(target)) {
+                    return Files.readAllBytes(target);
+                }
+            } catch (IOException ex) {
+                throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR, "读取课程文件失败");
+            }
+        }
+        throw new ServiceException(ErrorCode.NOT_FOUND, "课程文件不存在");
     }
 
     private void ensureBucketExists() throws Exception {
@@ -120,7 +148,7 @@ public class CourseFileStorageService {
         return "application/octet-stream";
     }
 
-    private String extractObjectKey(String url) {
+    public String extractObjectKey(String url) {
         String[] candidatePrefixes = new String[] {
                 stripTrailingSlash(properties.getPublicUrl()),
                 stripTrailingSlash(properties.getEndpoint()) + "/" + properties.getBucket()

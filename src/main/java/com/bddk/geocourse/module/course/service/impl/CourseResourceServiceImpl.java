@@ -9,6 +9,8 @@ import com.bddk.geocourse.module.course.dal.dataobject.CourseResourceDO;
 import com.bddk.geocourse.module.course.dal.mapper.CourseInfoMapper;
 import com.bddk.geocourse.module.course.dal.mapper.CourseResourceMapper;
 import com.bddk.geocourse.module.course.model.CourseMetadata;
+import com.bddk.geocourse.module.course.model.CourseChapterResourceView;
+import com.bddk.geocourse.module.course.model.CourseChapterView;
 import com.bddk.geocourse.module.course.model.CourseResourceCategory;
 import com.bddk.geocourse.module.course.model.CourseResourceCreateCommand;
 import com.bddk.geocourse.module.course.model.CourseResourceStorageMetadata;
@@ -16,8 +18,8 @@ import com.bddk.geocourse.module.course.model.CourseResourceUpdateRequest;
 import com.bddk.geocourse.module.course.model.CourseResourceView;
 import com.bddk.geocourse.module.course.service.CourseFileStorageService;
 import com.bddk.geocourse.module.course.service.CourseResourceService;
-import com.bddk.geocourse.module.course.service.CourseVideoStorageService;
 import com.bddk.geocourse.module.course.service.StoredResource;
+import com.bddk.geocourse.module.course.service.support.CourseViewMapper;
 import com.bddk.geocourse.module.identity.stp.StpAdminUtil;
 import com.bddk.geocourse.module.identity.stp.StpSchoolAdminUtil;
 import com.bddk.geocourse.module.identity.stp.StpTeacherUtil;
@@ -32,10 +34,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,21 +60,23 @@ public class CourseResourceServiceImpl implements CourseResourceService {
             Map.entry("expertGuideVideo", 120)
     );
 
+    private static final Set<String> VIDEO_RESOURCE_TYPES = Set.of("video", "expertGuideVideo");
+
     private final CourseInfoMapper courseInfoMapper;
     private final CourseResourceMapper courseResourceMapper;
     private final CourseFileStorageService courseFileStorageService;
-    private final CourseVideoStorageService courseVideoStorageService;
+    private final CourseViewMapper courseViewMapper;
     private final ObjectMapper objectMapper;
 
     public CourseResourceServiceImpl(CourseInfoMapper courseInfoMapper,
                                      CourseResourceMapper courseResourceMapper,
                                      CourseFileStorageService courseFileStorageService,
-                                     CourseVideoStorageService courseVideoStorageService,
+                                     CourseViewMapper courseViewMapper,
                                      ObjectMapper objectMapper) {
         this.courseInfoMapper = courseInfoMapper;
         this.courseResourceMapper = courseResourceMapper;
         this.courseFileStorageService = courseFileStorageService;
-        this.courseVideoStorageService = courseVideoStorageService;
+        this.courseViewMapper = courseViewMapper;
         this.objectMapper = objectMapper;
     }
 
@@ -84,7 +90,7 @@ public class CourseResourceServiceImpl implements CourseResourceService {
                 .orderByDesc(CourseInfoDO::getCreateTime)
                 .orderByDesc(CourseInfoDO::getId));
         List<CourseInfoDO> matchedInfos = courseInfos.stream()
-                .filter(item -> resolveCategory(item).pathValue().equals(targetCategory.pathValue()))
+                .filter(item -> courseViewMapper.resolveCategory(item).pathValue().equals(targetCategory.pathValue()))
                 .toList();
         if (matchedInfos.isEmpty()) {
             return List.of();
@@ -101,9 +107,27 @@ public class CourseResourceServiceImpl implements CourseResourceService {
                 .collect(Collectors.groupingBy(CourseResourceDO::getCourseId, LinkedHashMap::new, Collectors.toList()));
 
         return matchedInfos.stream()
-                .map(info -> toView(info, resourceMap.getOrDefault(info.getId(), List.of())))
-                .sorted(Comparator.comparing(CourseResourceView::getCreatedAt, Comparator.nullsLast(LocalDateTime::compareTo)).reversed())
+                .map(info -> courseViewMapper.toView(info, resourceMap.getOrDefault(info.getId(), List.of())))
                 .toList();
+    }
+
+    @Override
+    public CourseResourceView getCourseDetail(Long courseId) {
+        Long tenantId = requiredTenantId();
+        CourseInfoDO courseInfo = getCourseInfoOrThrow(tenantId, courseId);
+        List<CourseResourceDO> resourceList = courseResourceMapper.selectList(new LambdaQueryWrapper<CourseResourceDO>()
+                .eq(CourseResourceDO::getTenantId, tenantId)
+                .eq(CourseResourceDO::getCourseId, courseId)
+                .eq(CourseResourceDO::getStatus, 1)
+                .orderByAsc(CourseResourceDO::getChapterId)
+                .orderByAsc(CourseResourceDO::getSortNo)
+                .orderByAsc(CourseResourceDO::getId));
+
+        CourseResourceView view = courseViewMapper.toView(courseInfo, resourceList);
+        List<CourseChapterView> chapters = buildChapterViews(resourceList);
+        view.setChapters(chapters);
+        view.setChapterCount(chapters.size());
+        return view;
     }
 
     @Override
@@ -135,7 +159,7 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         courseInfo.setCourseCode(generateCourseCode(targetCategory));
         courseInfo.setCourseName(trimToNull(command.getTitle()));
         courseInfo.setCourseType(targetCategory.courseTypeValue());
-        courseInfo.setSubjectCode(resolveSubjectCode(command.getModule()));
+        courseInfo.setSubjectCode(courseViewMapper.resolveSubjectCode(command.getModule()));
         courseInfo.setCoverUrl(imageResource == null ? null : imageResource.url());
         courseInfo.setIntroText(trimToNull(command.getDescription()));
         courseInfo.setTeacherId(currentOperatorIdOrNull());
@@ -162,7 +186,7 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         resources.add(buildOptionalResourceDO(courseInfo.getId(), tenantId, targetCategory, "expertGuideVideo", command.getExpertGuideVideoFile()));
         resources.stream().filter(Objects::nonNull).forEach(courseResourceMapper::insert);
 
-        return toView(courseInfo, resources.stream().filter(Objects::nonNull).toList());
+        return courseViewMapper.toView(courseInfo, resources.stream().filter(Objects::nonNull).toList());
     }
 
     @Override
@@ -172,11 +196,11 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         Long tenantId = requiredTenantId();
         CourseInfoDO courseInfo = getCourseInfoOrThrow(tenantId, courseId);
         CourseResourceCategory targetCategory = CourseResourceCategory.fromPath(category);
-        if (!resolveCategory(courseInfo).pathValue().equals(targetCategory.pathValue())) {
+        if (!courseViewMapper.resolveCategory(courseInfo).pathValue().equals(targetCategory.pathValue())) {
             throw new ServiceException(ErrorCode.NOT_FOUND, "课程资源不存在");
         }
 
-        CourseMetadata metadata = parseMetadata(courseInfo.getRemark());
+        CourseMetadata metadata = courseViewMapper.parseMetadata(courseInfo.getRemark());
         metadata.setCategory(targetCategory.pathValue());
         metadata.setModule(trimToNull(request.getModule()));
         metadata.setStage(trimToNull(request.getStage()));
@@ -184,7 +208,7 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         metadata.setClassHours(request.getClassHours());
 
         courseInfo.setCourseName(trimToNull(request.getTitle()));
-        courseInfo.setSubjectCode(resolveSubjectCode(request.getModule()));
+        courseInfo.setSubjectCode(courseViewMapper.resolveSubjectCode(request.getModule()));
         courseInfo.setIntroText(trimToNull(request.getDescription()));
         courseInfo.setRemark(toMetadataJson(metadata));
         courseInfoMapper.updateById(courseInfo);
@@ -195,7 +219,7 @@ public class CourseResourceServiceImpl implements CourseResourceService {
                 .eq(CourseResourceDO::getStatus, 1)
                 .orderByAsc(CourseResourceDO::getSortNo)
                 .orderByAsc(CourseResourceDO::getId));
-        return toView(courseInfo, resources);
+        return courseViewMapper.toView(courseInfo, resources);
     }
 
     @Override
@@ -205,7 +229,7 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         Long tenantId = requiredTenantId();
         CourseInfoDO courseInfo = getCourseInfoOrThrow(tenantId, courseId);
         CourseResourceCategory targetCategory = CourseResourceCategory.fromPath(category);
-        if (!resolveCategory(courseInfo).pathValue().equals(targetCategory.pathValue())) {
+        if (!courseViewMapper.resolveCategory(courseInfo).pathValue().equals(targetCategory.pathValue())) {
             throw new ServiceException(ErrorCode.NOT_FOUND, "课程资源不存在");
         }
 
@@ -279,22 +303,11 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         if (file == null || file.isEmpty()) {
             return null;
         }
-        if (isVideoResourceType(resourceType)) {
-            return courseVideoStorageService.store(resourceType, file);
-        }
         return courseFileStorageService.store(category.pathValue(), resourceType, file);
-    }
-
-    private boolean isVideoResourceType(String resourceType) {
-        return "video".equals(resourceType) || "expertGuideVideo".equals(resourceType);
     }
 
     private void deleteStoredResource(CourseResourceDO resource) {
         CourseResourceStorageMetadata storageMetadata = parseResourceStorageMetadata(resource.getRemark());
-        if (storageMetadata != null && "vod".equalsIgnoreCase(storageMetadata.getProvider())) {
-            courseVideoStorageService.deleteByFileId(storageMetadata.getFileId());
-            return;
-        }
         if (storageMetadata != null && "minio".equalsIgnoreCase(storageMetadata.getProvider())) {
             courseFileStorageService.deleteByObjectKey(storageMetadata.getObjectKey());
             return;
@@ -374,11 +387,133 @@ public class CourseResourceServiceImpl implements CourseResourceService {
         }
     }
 
+    private List<CourseChapterView> buildChapterViews(List<CourseResourceDO> resourceList) {
+        if (resourceList == null || resourceList.isEmpty()) {
+            return List.of();
+        }
+
+        List<CourseResourceDO> unassignedResources = new ArrayList<>();
+        Map<Long, List<CourseResourceDO>> resourcesByChapterId = new LinkedHashMap<>();
+        for (CourseResourceDO resource : resourceList) {
+            if (resource.getChapterId() == null) {
+                unassignedResources.add(resource);
+                continue;
+            }
+            resourcesByChapterId.computeIfAbsent(resource.getChapterId(), key -> new ArrayList<>()).add(resource);
+        }
+
+        List<CourseChapterView> chapters = new ArrayList<>();
+        int order = 1;
+        if (!unassignedResources.isEmpty()) {
+            chapters.add(toChapterView(null, order++, unassignedResources));
+        }
+
+        for (Map.Entry<Long, List<CourseResourceDO>> entry : resourcesByChapterId.entrySet()) {
+            chapters.add(toChapterView(entry.getKey(), order++, entry.getValue()));
+        }
+
+        if (chapters.isEmpty()) {
+            chapters.add(toChapterView(null, 1, resourceList));
+        }
+        return chapters;
+    }
+
+    private CourseChapterView toChapterView(Long chapterId, int sortNo, List<CourseResourceDO> resources) {
+        List<CourseChapterResourceView> resourceViews = resources.stream()
+                .map(this::toChapterResourceView)
+                .toList();
+        CourseChapterResourceView primaryVideo = resourceViews.stream()
+                .filter(item -> VIDEO_RESOURCE_TYPES.contains(item.getResourceType()))
+                .findFirst()
+                .orElse(null);
+
+        CourseChapterView chapterView = new CourseChapterView();
+        chapterView.setChapterId(chapterId);
+        chapterView.setSortNo(sortNo);
+        chapterView.setTitle(resolveChapterTitle(sortNo, resourceViews));
+        chapterView.setResourceCount(resourceViews.size());
+        chapterView.setVideoCount((int) resourceViews.stream()
+                .filter(item -> VIDEO_RESOURCE_TYPES.contains(item.getResourceType()))
+                .count());
+        chapterView.setPrimaryVideoUrl(primaryVideo == null ? null : primaryVideo.getUrl());
+        chapterView.setPrimaryVideoCoverUrl(primaryVideo == null ? null : primaryVideo.getCoverUrl());
+        chapterView.setResources(resourceViews);
+        return chapterView;
+    }
+
+    private CourseChapterResourceView toChapterResourceView(CourseResourceDO resource) {
+        CourseResourceStorageMetadata metadata = parseResourceStorageMetadata(resource.getRemark());
+        CourseChapterResourceView view = new CourseChapterResourceView();
+        view.setResourceId(resource.getId());
+        view.setChapterId(resource.getChapterId());
+        view.setResourceType(resource.getResourceType());
+        view.setTitle(resolveResourceTitle(resource, metadata));
+        view.setFileName(resolveFileName(resource, metadata));
+        view.setUrl(resource.getResourceUrl());
+        view.setCoverUrl(metadata == null ? null : metadata.getCoverUrl());
+        view.setFileSize(metadata == null ? null : metadata.getFileSize());
+        view.setContentType(metadata == null ? null : metadata.getContentType());
+        view.setSortNo(resource.getSortNo());
+        view.setCreatedAt(resource.getCreateTime());
+        return view;
+    }
+
+    private String resolveChapterTitle(int order, List<CourseChapterResourceView> resources) {
+        String representativeTitle = resources.stream()
+                .filter(item -> item.getTitle() != null && !item.getTitle().isBlank())
+                .sorted((left, right) -> {
+                    boolean leftVideo = VIDEO_RESOURCE_TYPES.contains(left.getResourceType());
+                    boolean rightVideo = VIDEO_RESOURCE_TYPES.contains(right.getResourceType());
+                    if (leftVideo == rightVideo) {
+                        return Integer.compare(
+                                left.getSortNo() == null ? Integer.MAX_VALUE : left.getSortNo(),
+                                right.getSortNo() == null ? Integer.MAX_VALUE : right.getSortNo()
+                        );
+                    }
+                    return leftVideo ? -1 : 1;
+                })
+                .map(CourseChapterResourceView::getTitle)
+                .map(this::stripExtension)
+                .findFirst()
+                .orElse(null);
+
+        String prefix = "\u7b2c" + order + "\u7ae0";
+        if (representativeTitle == null || representativeTitle.isBlank()) {
+            return prefix + " \u00b7 \u8bfe\u7a0b\u5bfc\u5b66";
+        }
+        return prefix + " \u00b7 " + representativeTitle;
+    }
+
+    private String resolveResourceTitle(CourseResourceDO resource, CourseResourceStorageMetadata metadata) {
+        if (metadata != null && metadata.getResourceTitle() != null && !metadata.getResourceTitle().isBlank()) {
+            return metadata.getResourceTitle().trim();
+        }
+        String fileName = resolveFileName(resource, metadata);
+        return stripExtension(fileName);
+    }
+
+    private String resolveFileName(CourseResourceDO resource, CourseResourceStorageMetadata metadata) {
+        if (metadata != null && metadata.getOriginalFileName() != null && !metadata.getOriginalFileName().isBlank()) {
+            return metadata.getOriginalFileName().trim();
+        }
+        return resource.getResourceName();
+    }
+
+    private String stripExtension(String value) {
+        if (value == null || value.isBlank()) {
+            return value;
+        }
+        int lastDotIndex = value.lastIndexOf('.');
+        if (lastDotIndex <= 0) {
+            return value;
+        }
+        return value.substring(0, lastDotIndex);
+    }
+
     private String toResourceStorageJson(StoredResource storedResource) {
         CourseResourceStorageMetadata metadata = new CourseResourceStorageMetadata();
         metadata.setProvider(storedResource.provider());
         metadata.setObjectKey(storedResource.objectKey());
-        metadata.setFileId(storedResource.fileId());
         try {
             return objectMapper.writeValueAsString(metadata);
         } catch (JsonProcessingException ex) {

@@ -5,6 +5,7 @@ import com.bddk.geocourse.framework.common.api.PageResult;
 import com.bddk.geocourse.module.assignment.model.TeacherExamRankingView;
 import com.bddk.geocourse.module.assignment.model.TeacherExamRecordQuery;
 import com.bddk.geocourse.module.assignment.model.TeacherExamRecordView;
+import com.bddk.geocourse.module.assignment.model.TeacherPaperAttachmentImportRequest;
 import com.bddk.geocourse.module.assignment.model.TeacherPaperQuery;
 import com.bddk.geocourse.module.assignment.model.TeacherPaperSaveRequest;
 import com.bddk.geocourse.module.assignment.model.TeacherPaperView;
@@ -12,8 +13,10 @@ import com.bddk.geocourse.module.assignment.service.TeacherAssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,6 +54,12 @@ public class TeacherAssignmentController {
     @PostMapping("/papers")
     public ApiResponse<TeacherPaperView> createPaper(@Valid @RequestBody TeacherPaperSaveRequest request) {
         return ApiResponse.success("新增试卷成功", teacherAssignmentService.createPaper(request));
+    }
+
+    @Operation(summary = "上传附件直接创建试卷")
+    @PostMapping(path = "/papers/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<TeacherPaperView> importPaper(@Valid @ModelAttribute TeacherPaperAttachmentImportRequest request) {
+        return ApiResponse.success("导入建卷成功", teacherAssignmentService.importPaperFromAttachment(request));
     }
 
     @Operation(summary = "修改试卷")

@@ -3,6 +3,7 @@ package com.bddk.geocourse.module.course.model;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class CourseResourceView {
@@ -31,5 +32,11 @@ public class CourseResourceView {
     private String accessScope;
     private String downloadPermission;
     private String description;
+    private String publishStatus;
+    private Long teacherId;
+    private Integer resourceCount;
+    private Integer chapterCount;
+    private List<CourseChapterView> chapters;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

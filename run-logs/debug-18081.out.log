@@ -1,0 +1,128 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.atguigu:geocourse-server >--------------------
+[INFO] Building geocourse-server 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.13:run (default-cli) > test-compile @ geocourse-server >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ geocourse-server ---
+[INFO] Copying 4 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ geocourse-server ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ geocourse-server ---
+[INFO] skip non existing resourceDirectory F:\Geo\geocourse-ui\geocourse-server\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ geocourse-server ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot:3.5.13:run (default-cli) < test-compile @ geocourse-server <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.13:run (default-cli) @ geocourse-server ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.13)
+
+2026-04-21T11:13:06.284+08:00  INFO 20324 --- [geocourse-server] [           main] c.b.g.GeocourseServerApplication         : Starting GeocourseServerApplication using Java 17.0.8 with PID 20324 (F:\Geo\geocourse-ui\geocourse-server\target\classes started by 123 in F:\Geo\geocourse-ui\geocourse-server)
+2026-04-21T11:13:06.287+08:00 DEBUG 20324 --- [geocourse-server] [           main] c.b.g.GeocourseServerApplication         : Running with Spring Boot v3.5.13, Spring v6.2.17
+2026-04-21T11:13:06.287+08:00  INFO 20324 --- [geocourse-server] [           main] c.b.g.GeocourseServerApplication         : The following 1 profile is active: "local"
+2026-04-21T11:13:08.416+08:00  INFO 20324 --- [geocourse-server] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 18081 (http)
+2026-04-21T11:13:08.432+08:00  INFO 20324 --- [geocourse-server] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-21T11:13:08.434+08:00  INFO 20324 --- [geocourse-server] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
+2026-04-21T11:13:08.552+08:00  INFO 20324 --- [geocourse-server] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-04-21T11:13:08.553+08:00  INFO 20324 --- [geocourse-server] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2220 ms
+2026-04-21T11:13:08.746+08:00 DEBUG 20324 --- [geocourse-server] [           main] c.b.g.f.w.BearerTokenCompatibilityFilter : Filter 'bearerTokenCompatibilityFilter' configured for use
+2026-04-21T11:13:08.747+08:00 DEBUG 20324 --- [geocourse-server] [           main] c.b.g.f.config.ApiPrefixForwardFilter    : Filter 'apiPrefixForwardFilter' configured for use
+2026-04-21T11:13:08.747+08:00 DEBUG 20324 --- [geocourse-server] [           main] c.b.g.f.tenant.TenantContextFilter       : Filter 'tenantContextFilter' configured for use
+2026-04-21T11:13:10.993+08:00  INFO 20324 --- [geocourse-server] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+____ ____    ___ ____ _  _ ____ _  _ 
+[__  |__| __  |  |  | |_/  |___ |\ | 
+___] |  |     |  |__| | \_ |___ | \| 
+https://sa-token.cc (v1.45.0)
+2026-04-21T11:13:11.184+08:00  INFO 20324 --- [geocourse-server] [           main] m.e.s.MybatisPlusApplicationContextAware : Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@4dc8caa7
+2026-04-21T11:13:11.600+08:00  INFO 20324 --- [geocourse-server] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 18081 (http) with context path '/'
+2026-04-21T11:13:11.616+08:00  INFO 20324 --- [geocourse-server] [           main] c.b.g.GeocourseServerApplication         : Started GeocourseServerApplication in 5.809 seconds (process running for 6.305)
+2026-04-21T11:13:11.657+08:00  WARN 20324 --- [geocourse-server] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-04-21T11:13:11.657+08:00  WARN 20324 --- [geocourse-server] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-04-21T11:14:01.196+08:00  INFO 20324 --- [geocourse-server] [io-18081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-21T11:14:01.196+08:00  INFO 20324 --- [geocourse-server] [io-18081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-04-21T11:14:01.198+08:00  INFO 20324 --- [geocourse-server] [io-18081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-04-21T11:14:01.600+08:00  INFO 20324 --- [geocourse-server] [io-18081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-21T11:14:01.843+08:00  INFO 20324 --- [geocourse-server] [io-18081-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@587f4e07
+2026-04-21T11:14:01.847+08:00  INFO 20324 --- [geocourse-server] [io-18081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-21T11:14:01.854+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,user_no,username,nickname,real_name,password_hash,salt,phone,email,avatar_url,gender,user_type,register_source,last_login_time,last_login_ip,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user WHERE deleted=0 AND (tenant_id = ? AND username = ? AND status = ?) limit 1
+2026-04-21T11:14:01.883+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==> Parameters: 1001(Long), teacher(String), 1(Integer)
+2026-04-21T11:14:01.912+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:01.917+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==>  Preparing: SELECT id,tenant_id,user_id,role_id,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user_role WHERE deleted=0 AND (tenant_id = ? AND user_id = ? AND status = ?)
+2026-04-21T11:14:01.918+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:01.920+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : <==      Total: 1
+2026-04-21T11:14:01.923+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,role_code,role_name,role_type,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_role WHERE deleted=0 AND (tenant_id = ? AND id IN (?) AND status = ?)
+2026-04-21T11:14:01.924+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:01.926+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:01.929+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,user_no,username,nickname,real_name,password_hash,salt,phone,email,avatar_url,gender,user_type,register_source,last_login_time,last_login_ip,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user WHERE deleted=0 AND (tenant_id = ? AND username = ? AND status = ?) limit 1
+2026-04-21T11:14:01.929+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==> Parameters: 1001(Long), teacher(String), 1(Integer)
+2026-04-21T11:14:01.932+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:01.934+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==>  Preparing: SELECT id,tenant_id,user_id,role_id,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user_role WHERE deleted=0 AND (tenant_id = ? AND user_id = ? AND status = ?)
+2026-04-21T11:14:01.934+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:01.935+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : <==      Total: 1
+2026-04-21T11:14:01.944+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,role_code,role_name,role_type,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_role WHERE deleted=0 AND (tenant_id = ? AND id IN (?) AND status = ?)
+2026-04-21T11:14:01.945+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:01.947+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:01.958+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==>  Preparing: SELECT id,tenant_id,role_id,menu_id,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_role_menu WHERE deleted=0 AND (tenant_id = ? AND role_id IN (?) AND status = ?)
+2026-04-21T11:14:01.959+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:01.974+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : <==      Total: 5
+2026-04-21T11:14:01.980+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysMenuMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,parent_id,menu_type,menu_name,route_path,component_path,permission_code,icon,sort_no,visible,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_menu WHERE deleted=0 AND (tenant_id = ? AND id IN (?,?,?,?,?) AND status = ?) ORDER BY sort_no ASC,id ASC
+2026-04-21T11:14:01.981+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysMenuMapper.selectList   : ==> Parameters: 1001(Long), 21(Long), 22(Long), 23(Long), 24(Long), 25(Long), 1(Integer)
+2026-04-21T11:14:01.985+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysMenuMapper.selectList   : <==      Total: 5
+2026-04-21T11:14:01.989+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,user_no,username,nickname,real_name,password_hash,salt,phone,email,avatar_url,gender,user_type,register_source,last_login_time,last_login_ip,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user WHERE deleted=0 AND (id = ?) limit 1
+2026-04-21T11:14:01.989+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==> Parameters: 3(Long)
+2026-04-21T11:14:01.992+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysUserMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:01.995+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==>  Preparing: SELECT id,tenant_id,user_id,role_id,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user_role WHERE deleted=0 AND (tenant_id = ? AND user_id = ? AND status = ?)
+2026-04-21T11:14:01.996+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:01.997+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.S.selectList               : <==      Total: 1
+2026-04-21T11:14:01.998+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,role_code,role_name,role_type,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_role WHERE deleted=0 AND (tenant_id = ? AND id IN (?) AND status = ?)
+2026-04-21T11:14:01.999+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:02.002+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-1] c.b.g.m.i.d.m.SysRoleMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:02.156+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,user_no,username,nickname,real_name,password_hash,salt,phone,email,avatar_url,gender,user_type,register_source,last_login_time,last_login_ip,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user WHERE deleted=0 AND (id = ? AND status = ?) limit 1
+2026-04-21T11:14:02.158+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.SysUserMapper.selectList   : ==> Parameters: 3(Long), 1(Integer)
+2026-04-21T11:14:02.160+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.SysUserMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:02.161+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.S.selectList               : ==>  Preparing: SELECT id,tenant_id,user_id,role_id,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_user_role WHERE deleted=0 AND (tenant_id = ? AND user_id = ? AND status = ?)
+2026-04-21T11:14:02.162+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.S.selectList               : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:02.164+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.S.selectList               : <==      Total: 1
+2026-04-21T11:14:02.165+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==>  Preparing: SELECT id,tenant_id,role_code,role_name,role_type,status,create_by,create_time,update_by,update_time,deleted,remark FROM sys_role WHERE deleted=0 AND (tenant_id = ? AND id IN (?) AND status = ?)
+2026-04-21T11:14:02.166+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.SysRoleMapper.selectList   : ==> Parameters: 1001(Long), 3(Long), 1(Integer)
+2026-04-21T11:14:02.167+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.i.d.m.SysRoleMapper.selectList   : <==      Total: 1
+2026-04-21T11:14:02.285+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList_mpCount       : ==>  Preparing: SELECT COUNT(*) AS total FROM lesson_prep_document WHERE deleted = 0 AND (tenant_id = ? AND teacher_id = ?)
+2026-04-21T11:14:02.286+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList_mpCount       : ==> Parameters: 1001(Long), 3(Long)
+2026-04-21T11:14:02.287+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList_mpCount       : <==      Total: 1
+2026-04-21T11:14:02.291+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList               : ==>  Preparing: SELECT id,tenant_id,teacher_id,course_id,course_name,title,doc_type,status,summary,content_type,content_text,source_type,source_document_id,published_at,last_edited_at,create_by,create_time,update_by,update_time,deleted,remark FROM lesson_prep_document WHERE deleted=0 AND (tenant_id = ? AND teacher_id = ?) ORDER BY update_time DESC,id DESC LIMIT ?
+2026-04-21T11:14:02.292+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList               : ==> Parameters: 1001(Long), 3(Long), 10(Long)
+2026-04-21T11:14:02.299+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList               : <==      Total: 10
+2026-04-21T11:14:02.303+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList               : ==>  Preparing: SELECT id,tenant_id,document_id,file_id,relation_type,sort_no,linked_at,create_by,create_time,update_by,update_time,deleted FROM lesson_prep_document_file_rel WHERE deleted=0 AND (tenant_id = ? AND document_id IN (?,?,?,?,?,?,?,?,?,?))
+2026-04-21T11:14:02.303+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList               : ==> Parameters: 1001(Long), 15(Long), 14(Long), 13(Long), 12(Long), 11(Long), 10(Long), 9(Long), 8(Long), 7(Long), 6(Long)
+2026-04-21T11:14:02.303+08:00 DEBUG 20324 --- [geocourse-server] [io-18081-exec-2] c.b.g.m.l.d.m.L.selectList               : <==      Total: 1
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  03:29 min
+[INFO] Finished at: 2026-04-21T11:16:30+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.13:run (default-cli) on project geocourse-server: Process terminated with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

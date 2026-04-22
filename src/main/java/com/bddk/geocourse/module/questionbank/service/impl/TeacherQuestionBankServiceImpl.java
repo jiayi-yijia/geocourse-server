@@ -320,11 +320,14 @@ public class TeacherQuestionBankServiceImpl implements TeacherQuestionBankServic
     }
 
     private LambdaQueryWrapper<Question> buildQuestionQuery(Long tenantId, TeacherQuestionQuery query) {
+        String keyword = trimToNull(query.getKeyword());
+        String type = normalizeTypeAllowBlank(query.getType());
+        String difficulty = normalizeDifficultyAllowBlank(query.getDifficulty());
         return Wrappers.<Question>lambdaQuery()
                 .eq(Question::getTenantId, tenantId)
-                .like(StringUtils.hasText(query.getKeyword()), Question::getTitle, query.getKeyword().trim())
-                .eq(StringUtils.hasText(query.getType()), Question::getType, normalizeTypeAllowBlank(query.getType()))
-                .eq(StringUtils.hasText(query.getDifficulty()), Question::getDifficulty, normalizeDifficultyAllowBlank(query.getDifficulty()))
+                .like(keyword != null, Question::getTitle, keyword)
+                .eq(type != null, Question::getType, type)
+                .eq(difficulty != null, Question::getDifficulty, difficulty)
                 .eq(query.getCategoryId() != null, Question::getCategoryId, query.getCategoryId())
                 .orderByDesc(Question::getUpdateTime)
                 .orderByDesc(Question::getId);

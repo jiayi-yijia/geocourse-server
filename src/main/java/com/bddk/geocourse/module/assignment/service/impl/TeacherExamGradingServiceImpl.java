@@ -25,8 +25,10 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,12 +55,14 @@ public class TeacherExamGradingServiceImpl implements TeacherExamGradingService 
         Long tenantId = teacherPortalContextService.currentTenantId();
         long pageNo = query.getPageNo() <= 0 ? 1 : query.getPageNo();
         long pageSize = query.getPageSize() <= 0 ? 10 : Math.min(query.getPageSize(), 100);
+        String studentName = trimToNull(query.getStudentName());
+        String status = trimToNull(query.getStatus());
         Page<TeacherExamRecord> page = teacherExamRecordMapper.selectPage(new Page<>(pageNo, pageSize),
                 Wrappers.<TeacherExamRecord>lambdaQuery()
                         .eq(TeacherExamRecord::getTenantId, tenantId)
                         .eq(query.getPaperId() != null, TeacherExamRecord::getPaperId, query.getPaperId())
-                        .like(StringUtils.hasText(query.getStudentName()), TeacherExamRecord::getStudentName, query.getStudentName().trim())
-                        .eq(StringUtils.hasText(query.getStatus()), TeacherExamRecord::getStatus, query.getStatus().trim())
+                        .like(studentName != null, TeacherExamRecord::getStudentName, studentName)
+                        .eq(status != null, TeacherExamRecord::getStatus, status)
                         .orderByDesc(TeacherExamRecord::getCreateTime)
                         .orderByDesc(TeacherExamRecord::getId));
         Map<Long, String> paperNames = teacherPaperMapper.selectList(Wrappers.<TeacherPaper>lambdaQuery()
@@ -92,6 +96,15 @@ public class TeacherExamGradingServiceImpl implements TeacherExamGradingService 
                 .eq(TeacherExamAnswer::getExamRecordId, recordId));
         Map<Long, TeacherExamAnswer> answerMap = answers.stream()
                 .collect(Collectors.toMap(TeacherExamAnswer::getId, Function.identity(), (left, right) -> left));
+        Set<Long> requestAnswerIds = request.getItems().stream()
+                .map(TeacherExamGradeItemRequest::getAnswerId)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (requestAnswerIds.size() != request.getItems().size()) {
+            throw new ServiceException(ErrorCode.BAD_REQUEST, "批改明细中存在重复题目");
+        }
+        if (requestAnswerIds.size() != answerMap.size() || !requestAnswerIds.containsAll(answerMap.keySet())) {
+            throw new ServiceException(ErrorCode.BAD_REQUEST, "请提交完整的批改明细后再完成批改");
+        }
         BigDecimal objectiveScore = BigDecimal.ZERO;
         BigDecimal subjectiveScore = BigDecimal.ZERO;
         LocalDateTime now = LocalDateTime.now();

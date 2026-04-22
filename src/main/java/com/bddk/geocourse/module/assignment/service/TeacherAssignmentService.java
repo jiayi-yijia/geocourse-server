@@ -4,6 +4,7 @@ import com.bddk.geocourse.framework.common.api.PageResult;
 import com.bddk.geocourse.module.assignment.model.TeacherExamRankingView;
 import com.bddk.geocourse.module.assignment.model.TeacherExamRecordQuery;
 import com.bddk.geocourse.module.assignment.model.TeacherExamRecordView;
+import com.bddk.geocourse.module.assignment.model.TeacherPaperAttachmentImportRequest;
 import com.bddk.geocourse.module.assignment.model.TeacherPaperQuery;
 import com.bddk.geocourse.module.assignment.model.TeacherPaperSaveRequest;
 import com.bddk.geocourse.module.assignment.model.TeacherPaperView;
@@ -15,6 +16,8 @@ public interface TeacherAssignmentService {
     PageResult<TeacherPaperView> pagePapers(TeacherPaperQuery query);
 
     TeacherPaperView getPaper(Long paperId);
+
+    TeacherPaperView importPaperFromAttachment(TeacherPaperAttachmentImportRequest request);
 
     TeacherPaperView createPaper(TeacherPaperSaveRequest request);
 
