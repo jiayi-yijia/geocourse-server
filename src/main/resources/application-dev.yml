@@ -12,9 +12,18 @@ geocourse:
       password: ${REDIS_PASSWORD:redis123456}
       database: ${REDIS_DATABASE:0}
     minio:
+<<<<<<< HEAD
       endpoint: ${MINIO_ENDPOINT:http://8.154.18.171:19000}
       console-endpoint: ${MINIO_CONSOLE_ENDPOINT:http://8.154.18.171:19001}
       access-key: ${MINIO_ACCESS_KEY:minio}
       secret-key: ${MINIO_SECRET_KEY:minio123456}
       bucket: ${MINIO_BUCKET:geocourse}
       public-url: ${MINIO_PUBLIC_URL:http://8.154.18.171:19000/geocourse}
+=======
+      endpoint: ${MINIO_ENDPOINT:http://192.168.200.129:9000}
+      console-endpoint: ${MINIO_CONSOLE_ENDPOINT:http://192.168.200.129:9001}
+      access-key: ${MINIO_ACCESS_KEY:minio}
+      secret-key: ${MINIO_SECRET_KEY:minio123456}
+      bucket: ${MINIO_BUCKET:geocourse}
+      public-url: ${MINIO_PUBLIC_URL:http://192.168.200.129:9000/geocourse}
+>>>>>>> 35ccd34 (基础功能1.0)

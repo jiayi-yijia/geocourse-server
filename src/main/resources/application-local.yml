@@ -14,9 +14,18 @@ geocourse:
       password: redis123456
       database: 0
     minio:
+<<<<<<< HEAD
       endpoint: http://8.154.18.171:19000
       console-endpoint: http://8.154.18.171:19001
       access-key: minio
       secret-key: minio123456
       bucket: geocourse
       public-url: http://8.154.18.171:19000/geocourse
+=======
+      endpoint: http://192.168.200.129:9000
+      console-endpoint: http://192.168.200.129:9001
+      access-key: minio
+      secret-key: minio123456
+      bucket: geocourse
+      public-url: http://192.168.200.129:9000/geocourse
+>>>>>>> 35ccd34 (基础功能1.0)
